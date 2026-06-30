@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import io
 from pathlib import Path
+from typing import Any
 
 import httpx
 import yaml
@@ -59,7 +60,7 @@ def _is_admin(event: Event) -> bool:
 _http = httpx.AsyncClient(timeout=30)
 
 
-async def _get_result(path: str, params: dict | None = None) -> any:
+async def _get_result(path: str, params: dict | None = None) -> Any:
     r = await _http.get(FENGSHENG_URL + path, params=params)
     r.raise_for_status()
     j = r.json()

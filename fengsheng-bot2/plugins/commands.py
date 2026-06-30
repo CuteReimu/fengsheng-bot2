@@ -119,7 +119,7 @@ async def _h_season_rank(args: Message = CommandArg()) -> None:
     except Exception as e:
         logger.error(e)
         return
-    await _season_rank.finish(MessageSegment.image(file=img))
+    await _season_rank.finish(MessageSegment.file_image(img))
 
 
 # 胜率
@@ -135,7 +135,7 @@ async def _h_winrate(args: Message = CommandArg()) -> None:
     except Exception as e:
         logger.error(e)
         return
-    await _winrate.finish(MessageSegment.image(file=img))
+    await _winrate.finish(MessageSegment.file_image(img))
 
 
 # 注册
