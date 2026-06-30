@@ -1,0 +1,3 @@
+include bot.py
+include .env
+include start.sh

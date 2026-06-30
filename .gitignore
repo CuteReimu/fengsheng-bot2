@@ -1,0 +1,11 @@
+*.log
+.env.local
+.idea/
+.vscode/
+venv/
+.venv/
+__pycache__/
+/dist/
+/logs/
+/fengsheng_bot2.egg-info/
+/build/

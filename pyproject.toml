@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "fengsheng-bot2"
+version = "1.0.0"
+description = "风声群机器人，基于 NoneBot2 + QQ 官方机器人适配器"
+requires-python = ">=3.12"
+dependencies = [
+    "nonebot2[websockets,httpx]>=2.5.0",
+    "nonebot-adapter-console>=0.6.0",
+    "nonebot-adapter-qq>=1.7.1",
+    "httpx>=0.27.0",
+    "pyyaml>=6.0",
+    "Pillow>=10.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "build>=1.4.0",
+]
+
+[tool.setuptools.packages.find]
+include = ["fengsheng-bot2*"]
+
