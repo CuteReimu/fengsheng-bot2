@@ -9,3 +9,7 @@ __pycache__/
 /logs/
 /fengsheng_bot2.egg-info/
 /build/
+/data/
+/config/
+/chat_images/
+/chat_images1/
