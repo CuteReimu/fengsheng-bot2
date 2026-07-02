@@ -24,7 +24,7 @@ async def _h_bind(event: Event, args: Message = CommandArg()) -> None:
         if id0 == uid:
             await _bind.finish("不能重复绑定")
         if name0 == name:
-            await _bind.finish(f"已绑定 {name0}")
+            await _bind.finish("该角色已被绑定")
     try:
         result = await _get_str("/getscore", {"name": name})
     except Exception as e:
