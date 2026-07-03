@@ -4,6 +4,7 @@ import yaml
 from nonebot import on_command, on_message, require
 from nonebot.adapters import Event
 from nonebot.adapters.qq import GroupMessageCreateEvent, C2CMessageCreateEvent
+from nonebot.adapters.qq.message import Message, LocalAttachment
 from nonebot.log import logger
 from nonebot.params import CommandArg
 
@@ -44,6 +45,30 @@ _add_db_qq_list: dict[str, str] = {}
 
 def _deal_key(s: str) -> str:
     return s.strip().lower()
+
+
+# ====================== 通用工具 ======================
+
+
+def _ensure_iterable(var):
+    try:
+        iter(var)
+        return var
+    except TypeError:
+        return [var]
+
+
+async def _send_many_pics_msg(old_message, reply_message):
+    reply_msg = Message()
+    has_pic = False
+    for msg in _ensure_iterable(reply_message):
+        if isinstance(msg, LocalAttachment):
+            if has_pic:
+                await old_message.send(reply_msg)
+                reply_msg = Message()
+            has_pic = True
+        reply_msg += msg
+    await old_message.finish(reply_msg if len(reply_msg) > 0 else None)
 
 
 # ── dict message handlers ─────────────────────────────────────────────────────
@@ -92,7 +117,7 @@ async def _handle_dict_fallback(event: Event) -> None:
         return
     msg = build_message(s)
     if msg:
-        await _dict_fallback.finish(msg)
+        await _send_many_pics_msg(_dict_fallback, msg)
 
 
 # ── dict commands ─────────────────────────────────────────────────────────────
