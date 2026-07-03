@@ -7,7 +7,7 @@ from nonebot.log import logger
 
 _DB_DIR = os.path.join("assets", "database")
 os.makedirs(_DB_DIR, exist_ok=True)
-_DB_PATH = os.path.join(_DB_DIR, "maplebot")
+_DB_PATH = os.path.join(_DB_DIR, "fengsheng-bot2")
 _lock = threading.Lock()
 
 

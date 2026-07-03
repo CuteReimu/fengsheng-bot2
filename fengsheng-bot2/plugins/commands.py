@@ -14,8 +14,8 @@ from nonebot.params import CommandArg
 from ._core import (
     SCORE_FAIL,
     _perm, _save, _is_admin,
-    _get_str, _get_bool, _get_int, _get_bytes,
-    deal_get_score,
+    _get_str, _get_bool, _get_int, _get_bytes, _get_json,
+    deal_get_score, render_frequency, render_winrate2, render_game_status,
 )
 
 
@@ -268,6 +268,63 @@ _roll = on_command("roll", priority=10, block=True)
 async def _h_roll(args: Message = CommandArg()) -> None:
     if not args.extract_plain_text().strip():
         await _roll.finish(f"roll: {random.randint(0, 99)}")
+
+
+# 活跃
+_frequency = on_command("活跃", priority=10, block=True)
+
+
+@_frequency.handle()
+async def _h_frequency(args: Message = CommandArg()) -> None:
+    if args.extract_plain_text().strip():
+        return
+    try:
+        resp = await _get_json("/frequency")
+    except Exception as e:
+        logger.error(e)
+        return
+    img = render_frequency(resp.get("data", []), resp.get("hours", []))
+    await _frequency.finish(MessageSegment.file_image(img))
+
+
+# 胜率图
+_winrate2 = on_command("胜率图", priority=10, block=True)
+
+
+@_winrate2.handle()
+async def _h_winrate2(args: Message = CommandArg()) -> None:
+    if args.extract_plain_text().strip():
+        return
+    try:
+        resp = await _get_json("/winrate2")
+    except Exception as e:
+        logger.error(e)
+        return
+    img = render_winrate2(resp.get("data", {}))
+    await _winrate2.finish(MessageSegment.file_image(img))
+
+
+# 观战
+_watch = on_command("观战", priority=10, block=True)
+
+
+@_watch.handle()
+async def _h_watch(args: Message = CommandArg()) -> None:
+    if args.extract_plain_text().strip():
+        return
+    try:
+        rooms = await _get_json("/getallgames")
+    except Exception as e:
+        logger.error(e)
+        return
+    if not rooms:
+        await _watch.finish("当前没有房间")
+    imgs = render_game_status(rooms or [])
+    if not imgs:
+        await _watch.finish("当前没有房间")
+    for img in imgs[:-1]:
+        await _watch.send(QQMessage() + MessageSegment.file_image(img))
+    await _watch.finish(QQMessage() + MessageSegment.file_image(imgs[-1]))
 
 def _do_h_help(event: Event) -> str:
     uid = event.get_user_id()

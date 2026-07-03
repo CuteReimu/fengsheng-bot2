@@ -3,7 +3,7 @@ from pathlib import Path
 import yaml
 from nonebot import on_command, on_message, require
 from nonebot.adapters import Event
-from nonebot.adapters.qq import GroupMessageCreateEvent
+from nonebot.adapters.qq import GroupMessageCreateEvent, C2CMessageCreateEvent
 from nonebot.log import logger
 from nonebot.params import CommandArg
 
@@ -33,7 +33,7 @@ def _load_dict() -> dict[str, str]:
 
 
 def _save_dict() -> None:
-    _DICT_DATA_PATH.write_text(yaml.dump(_dict_data, allow_unicode=True, default_flow_style=False))
+    _DICT_DATA_PATH.write_text(yaml.dump({"data": _dict_data}, allow_unicode=True, default_flow_style=False))
 
 
 _dict_data: dict[str, str] = _load_dict()
@@ -65,15 +65,12 @@ _dict_callback = on_message(priority=5, block=False)
 
 @_dict_callback.handle()
 async def _handle_dict_callback(event: Event) -> None:
-    if not isinstance(event, GroupMessageCreateEvent):
+    if not isinstance(event, C2CMessageCreateEvent):
         return
     user_id = event.get_user_id()
     if user_id not in _add_db_qq_list:
         return
     key = _add_db_qq_list.pop(user_id)
-    if key == "太阳":
-        await _dict_callback.finish("未知错误")
-        return
     buf = serialize_message(event.get_message())
     _dict_data[key] = buf
     _save_dict()
@@ -191,9 +188,6 @@ async def _deal_modify_dict(matcher, user_id: str, key: str) -> None:
 
 
 async def _deal_remove_dict(matcher, key: str) -> None:
-    if key == "太阳":
-        await matcher.finish("未知错误")
-        return
     if key not in _dict_data:
         await matcher.finish("词条不存在")
         return
