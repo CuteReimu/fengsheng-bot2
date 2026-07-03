@@ -28,7 +28,7 @@ def _score_msg(scored: tuple[str, list[bytes]]) -> QQMessage:
 
 
 # 查询我
-_query_me = on_command("查询我", priority=10, block=True)
+_query_me = on_command("查询我", priority=10, force_whitespace=True, block=True)
 
 
 @_query_me.handle()
@@ -49,7 +49,7 @@ async def _h_query_me(event: Event, args: Message = CommandArg()) -> None:
 
 
 # 查询 <name> or 查询 @someone
-_query = on_command("查询", priority=10, block=True)
+_query = on_command("查询", priority=10, force_whitespace=True, block=True)
 
 
 @_query.handle()
@@ -91,7 +91,7 @@ async def _h_query(event: Event, args: Message = CommandArg()) -> None:
 
 
 # 排行
-_rank = on_command("排行", priority=10, block=True)
+_rank = on_command("排行", priority=10, force_whitespace=True, block=True)
 
 
 @_rank.handle()
@@ -107,7 +107,7 @@ async def _h_rank(args: Message = CommandArg()) -> None:
 
 
 # 赛季最高分排行
-_season_rank = on_command("赛季最高分排行", priority=10, block=True)
+_season_rank = on_command("赛季最高分排行", priority=10, force_whitespace=True, block=True)
 
 
 @_season_rank.handle()
@@ -123,7 +123,7 @@ async def _h_season_rank(args: Message = CommandArg()) -> None:
 
 
 # 胜率
-_winrate = on_command("胜率", priority=10, block=True)
+_winrate = on_command("胜率", priority=10, force_whitespace=True, block=True)
 
 
 @_winrate.handle()
@@ -165,7 +165,7 @@ async def _h_register(event: Event, args: Message = CommandArg()) -> None:
 
 
 # 艾特
-_at_player = on_command("艾特", priority=10, block=True)
+_at_player = on_command("艾特", priority=10, force_whitespace=True, block=True)
 
 
 @_at_player.handle()
@@ -181,7 +181,7 @@ async def _h_at_player(args: Message = CommandArg()) -> None:
 
 
 # 重置密码
-_reset_pwd = on_command("重置密码", priority=10, block=True)
+_reset_pwd = on_command("重置密码", priority=10, force_whitespace=True, block=True)
 
 
 @_reset_pwd.handle()
@@ -210,7 +210,7 @@ async def _h_reset_pwd(event: Event, args: Message = CommandArg()) -> None:
 
 
 # 签到
-_sign = on_command("签到", priority=10, block=True)
+_sign = on_command("签到", priority=10, force_whitespace=True, block=True)
 
 
 @_sign.handle()
@@ -251,7 +251,7 @@ async def _h_sign(event: Event, args: Message = CommandArg()) -> None:
 
 
 # ping
-_ping = on_command("ping", priority=10, block=True)
+_ping = on_command("ping", priority=10, force_whitespace=True, block=True)
 
 
 @_ping.handle()
@@ -261,7 +261,7 @@ async def _h_ping(args: Message = CommandArg()) -> None:
 
 
 # roll
-_roll = on_command("roll", priority=10, block=True)
+_roll = on_command("roll", priority=10, force_whitespace=True, block=True)
 
 
 @_roll.handle()
@@ -271,7 +271,7 @@ async def _h_roll(args: Message = CommandArg()) -> None:
 
 
 # 活跃
-_frequency = on_command("活跃", priority=10, block=True)
+_frequency = on_command("活跃", priority=10, force_whitespace=True, block=True)
 
 
 @_frequency.handle()
@@ -288,7 +288,7 @@ async def _h_frequency(args: Message = CommandArg()) -> None:
 
 
 # 胜率图
-_winrate2 = on_command("胜率图", priority=10, block=True)
+_winrate2 = on_command("胜率图", priority=10, force_whitespace=True, block=True)
 
 
 @_winrate2.handle()
@@ -305,7 +305,7 @@ async def _h_winrate2(args: Message = CommandArg()) -> None:
 
 
 # 观战
-_watch = on_command("观战", priority=10, block=True)
+_watch = on_command("观战", priority=10, force_whitespace=True, block=True)
 
 
 @_watch.handle()
@@ -352,7 +352,7 @@ def _do_h_help(event: Event) -> str:
     return "你可以使用以下功能：\n" + "\n".join(map(_format_tip, tips))
 
 # 查看帮助
-_help = on_command("查看帮助", priority=10, block=True)
+_help = on_command("查看帮助", priority=10, force_whitespace=True, block=True)
 
 
 @_help.handle()

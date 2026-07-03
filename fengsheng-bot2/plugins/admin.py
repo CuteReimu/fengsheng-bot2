@@ -39,7 +39,7 @@ async def _h_bind(event: Event, args: Message = CommandArg()) -> None:
 
 
 # 解绑
-_unbind = on_command("解绑", priority=10, block=True)
+_unbind = on_command("解绑", priority=10, force_whitespace=True, block=True)
 
 
 @_unbind.handle()
@@ -58,7 +58,7 @@ async def _h_unbind(event: Event, args: Message = CommandArg()) -> None:
 
 
 # 解绑所有0分玩家
-_unbind_expired = on_command("解绑所有0分玩家", priority=10, block=True)
+_unbind_expired = on_command("解绑所有0分玩家", priority=10, force_whitespace=True, block=True)
 
 
 @_unbind_expired.handle()
@@ -83,7 +83,7 @@ async def _h_unbind_expired(event: Event, args: Message = CommandArg()) -> None:
 
 
 # 封号
-_forbid_player = on_command("封号", priority=10, block=True)
+_forbid_player = on_command("封号", priority=10, force_whitespace=True, block=True)
 
 
 @_forbid_player.handle()
@@ -111,7 +111,7 @@ async def _h_forbid_player(event: Event, args: Message = CommandArg()) -> None:
 
 
 # 解封
-_release_player = on_command("解封", priority=10, block=True)
+_release_player = on_command("解封", priority=10, force_whitespace=True, block=True)
 
 
 @_release_player.handle()
@@ -131,7 +131,7 @@ async def _h_release_player(event: Event, args: Message = CommandArg()) -> None:
 
 
 # 禁用角色
-_forbid_role = on_command("禁用角色", priority=10, block=True)
+_forbid_role = on_command("禁用角色", priority=10, force_whitespace=True, block=True)
 
 
 @_forbid_role.handle()
@@ -151,7 +151,7 @@ async def _h_forbid_role(event: Event, args: Message = CommandArg()) -> None:
 
 
 # 启用角色
-_release_role = on_command("启用角色", priority=10, block=True)
+_release_role = on_command("启用角色", priority=10, force_whitespace=True, block=True)
 
 
 @_release_role.handle()
@@ -171,7 +171,7 @@ async def _h_release_role(event: Event, args: Message = CommandArg()) -> None:
 
 
 # 修改版本号
-_set_version = on_command("修改版本号", priority=10, block=True)
+_set_version = on_command("修改版本号", priority=10, force_whitespace=True, block=True)
 
 
 @_set_version.handle()
@@ -193,7 +193,7 @@ async def _h_set_version(event: Event, args: Message = CommandArg()) -> None:
 
 
 # 强制结束所有游戏
-_force_end = on_command("强制结束所有游戏", priority=10, block=True)
+_force_end = on_command("强制结束所有游戏", priority=10, force_whitespace=True, block=True)
 
 
 @_force_end.handle()
@@ -212,7 +212,7 @@ async def _h_force_end(event: Event, args: Message = CommandArg()) -> None:
 
 
 # 修改公告
-_set_notice = on_command("修改公告", priority=10, block=True)
+_set_notice = on_command("修改公告", priority=10, force_whitespace=True, block=True)
 
 
 @_set_notice.handle()
@@ -232,7 +232,7 @@ async def _h_set_notice(event: Event, args: Message = CommandArg()) -> None:
 
 
 # 修改出牌时间
-_set_wait = on_command("修改出牌时间", priority=10, block=True)
+_set_wait = on_command("修改出牌时间", priority=10, force_whitespace=True, block=True)
 
 
 @_set_wait.handle()
@@ -257,7 +257,7 @@ async def _h_set_wait(event: Event, args: Message = CommandArg()) -> None:
 
 
 # 创号
-_create_account = on_command("创号", priority=10, block=True)
+_create_account = on_command("创号", priority=10, force_whitespace=True, block=True)
 
 
 @_create_account.handle()
@@ -277,7 +277,7 @@ async def _h_create_account(event: Event, args: Message = CommandArg()) -> None:
 
 
 # 增加精力
-_add_energy = on_command("增加精力", priority=10, block=True)
+_add_energy = on_command("增加精力", priority=10, force_whitespace=True, block=True)
 
 
 @_add_energy.handle()
