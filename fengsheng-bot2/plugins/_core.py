@@ -137,74 +137,13 @@ SCORE_FAIL = [
 
 # ── table renderer ────────────────────────────────────────────────────────────
 
-_FONT_SIZE = 15
-_PAD_X = 10
-_PAD_Y = 7
-_HEADER_BG = (68, 114, 196)
-_HEADER_FG = (255, 255, 255)
-_ROW_BG = [(255, 255, 255), (240, 244, 251)]
-_ROW_FG = (30, 30, 30)
-_BORDER = (190, 190, 190)
 
-_font_cache: dict[int, object] = {}
-
-
-def _get_font(size: int):
-    if size in _font_cache:
-        return _font_cache[size]
-    from PIL import ImageFont
-
-    font = None
-    for search_root in [Path("."), Path("/usr/share/fonts")]:
-        if search_root.is_dir():
-            for p in search_root.rglob("simhei.ttf"):
-                try:
-                    font = ImageFont.truetype(str(p), size)
-                    break
-                except Exception:
-                    pass
-        if font is not None:
-            break
-
-    if font is None:
-        font = ImageFont.load_default()
-    _font_cache[size] = font
-    return font
-
-
-def _render_table(header: list[str], rows: list[list[str]], width: int) -> bytes:
-    from PIL import Image, ImageDraw
-
-    font = _get_font(_FONT_SIZE)
-    row_h = _FONT_SIZE + _PAD_Y * 2
-    n_cols = len(header)
-    col_w = width // n_cols
-    height = (len(rows) + 1) * row_h + 1
-
-    img = Image.new("RGB", (width, height), (255, 255, 255))
-    draw = ImageDraw.Draw(img)
-
-    def _draw_row(y: int, cells: list[str], bg: tuple, fg: tuple) -> None:
-        draw.rectangle([0, y, width - 1, y + row_h - 1], fill=bg)
-        for i, cell in enumerate(cells[:n_cols]):
-            draw.text((_PAD_X + i * col_w, y + _PAD_Y), cell, font=font, fill=fg)
-
-    _draw_row(0, header, _HEADER_BG, _HEADER_FG)
-    for r, row in enumerate(rows):
-        _draw_row((r + 1) * row_h, row, _ROW_BG[r % 2], _ROW_FG)
-
-    for r in range(len(rows) + 2):
-        y = r * row_h
-        draw.line([0, y, width - 1, y], fill=_BORDER)
-    for c in range(n_cols + 1):
-        x = c * col_w
-        if c == n_cols:
-            x = width - 1
-        draw.line([x, 0, x, height - 1], fill=_BORDER)
-
-    buf = io.BytesIO()
-    img.save(buf, format="PNG")
-    return buf.getvalue()
+def _render_table(header: list[str], rows: list[list[str]]) -> str:
+    sep = "|" + "|".join("---" for _ in header) + "|"
+    lines = ["|" + "|".join(header) + "|", sep]
+    for row in rows:
+        lines.append("|" + "|".join(row) + "|")
+    return "\n" + "\n".join(lines) + "\n"
 
 
 def deal_get_score(result: str) -> tuple[str, list[bytes]]:
@@ -242,13 +181,13 @@ def deal_get_score(result: str) -> tuple[str, list[bytes]]:
 
     history_rows.reverse()
 
-    imgs: list[bytes] = []
     if win_rate_rows:
-        imgs.append(_render_table(["身份", "胜率", "平均胜率", "场次"], win_rate_rows, 440))
+        header_parts.append(_render_table(["身份", "胜率", "平均胜率", "场次"], win_rate_rows))
     if history_rows:
-        imgs.append(_render_table(["角色", "存活", "身份", "胜负", "段位", "分数"], history_rows, 720))
+        header_parts.append("\n***\n")
+        header_parts.append(_render_table(["角色", "存活", "身份", "胜负", "段位", "分数"], history_rows))
 
-    return "".join(header_parts).strip(), imgs
+    return "".join(header_parts).strip(), []
 
 
 # ── chart renderers ───────────────────────────────────────────────────────────
@@ -356,7 +295,7 @@ def _role_color(name: str) -> tuple:
     for i, cat in enumerate(_ROLE_CATEGORIES):
         if name in cat:
             return _CAT_COLORS[i]
-    return (0.6, 0.6, 0.6)
+    return 0.6, 0.6, 0.6
 
 
 def render_winrate2(role_data: dict) -> bytes:
@@ -412,14 +351,9 @@ def render_winrate2(role_data: dict) -> bytes:
     return buf.getvalue()
 
 
-def render_game_status(rooms: list[dict]) -> list[bytes]:
-    """Render game rooms as Pillow table images. Returns one image per room."""
-    from PIL import Image, ImageDraw
-
-    title_font = _get_font(_FONT_SIZE + 1)
-    row_font = _get_font(_FONT_SIZE)
-
-    result: list[bytes] = []
+def render_game_status(rooms: list[dict]) -> list[str]:
+    """Render game rooms as markdown tables. Returns one string per room."""
+    result: list[str] = []
     for room in rooms:
         room_id = room.get("id", "?")
         turn = room.get("turn", 0)
@@ -441,40 +375,6 @@ def render_game_status(rooms: list[dict]) -> list[bytes]:
             msg_str = f"红:{mc[1]} 蓝:{mc[2]} 黑:{mc[0]}" if len(mc) >= 3 else ""
             rows.append([p.get("name", ""), p.get("role_name", ""), status, str(p.get("cards", "")), msg_str])
 
-        width = 660
-        n_cols = len(header)
-        col_w = width // n_cols
-        row_h = _FONT_SIZE + _PAD_Y * 2
-        title_h = (_FONT_SIZE + 1) + _PAD_Y * 2
-        table_h = (len(rows) + 1) * row_h + 1
-        total_h = title_h + table_h
-
-        img = Image.new("RGB", (width, total_h), (245, 247, 250))
-        draw = ImageDraw.Draw(img)
-
-        draw.rectangle([0, 0, width - 1, title_h - 1], fill=(240, 244, 251))
-        draw.text((_PAD_X, _PAD_Y), title, font=title_font, fill=(48, 49, 51))
-
-        base_y = title_h
-
-        def _draw_row(y: int, cells: list[str], bg: tuple, fg: tuple, font=row_font) -> None:
-            draw.rectangle([0, y, width - 1, y + row_h - 1], fill=bg)
-            for i, cell in enumerate(cells[:n_cols]):
-                draw.text((_PAD_X + i * col_w, y + _PAD_Y), cell, font=font, fill=fg)
-
-        _draw_row(base_y, header, _HEADER_BG, _HEADER_FG)
-        for r, row in enumerate(rows):
-            _draw_row(base_y + (r + 1) * row_h, row, _ROW_BG[r % 2], _ROW_FG)
-
-        for r in range(len(rows) + 2):
-            y = base_y + r * row_h
-            draw.line([0, y, width - 1, y], fill=_BORDER)
-        for c in range(n_cols + 1):
-            x = c * col_w if c < n_cols else width - 1
-            draw.line([x, base_y, x, total_h - 1], fill=_BORDER)
-
-        buf = io.BytesIO()
-        img.save(buf, format="PNG")
-        result.append(buf.getvalue())
+        result.append(title + _render_table(header, rows))
 
     return result

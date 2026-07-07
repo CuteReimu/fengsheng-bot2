@@ -21,7 +21,7 @@ from ._core import (
 
 def _score_msg(scored: tuple[str, list[bytes]]) -> QQMessage:
     text, imgs = scored
-    msg = QQMessage(text)
+    msg = QQMessage(MessageSegment.markdown(text))
     for img in imgs:
         msg += MessageSegment.file_image(img)
     return msg
@@ -49,7 +49,7 @@ async def _h_query_me(event: Event, args: Message = CommandArg()) -> None:
 
 
 # 查询 <name> or 查询 @someone
-_query = on_command("查询", priority=10, force_whitespace=True, block=True)
+_query = on_command("查询", priority=10, block=True)
 
 
 @_query.handle()
@@ -323,8 +323,8 @@ async def _h_watch(args: Message = CommandArg()) -> None:
     if not imgs:
         await _watch.finish("当前没有房间")
     for img in imgs[:-1]:
-        await _watch.send(QQMessage() + MessageSegment.file_image(img))
-    await _watch.finish(QQMessage() + MessageSegment.file_image(imgs[-1]))
+        await _watch.send(MessageSegment.markdown(img))
+    await _watch.finish(MessageSegment.markdown(imgs[-1]))
 
 def _do_h_help(event: Event) -> str:
     uid = event.get_user_id()
