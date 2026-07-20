@@ -193,10 +193,13 @@ async def _h_reset_pwd(event: Event, args: Message = CommandArg()) -> None:
         if not player_name:
             if _is_admin(event):
                 await _reset_pwd.finish("重置密码 名字")
+                return
+            await _reset_pwd.finish("请先注册或绑定")
             return
         target = player_name
     else:
         if not _is_admin(event):
+            await _reset_pwd.finish()
             return
         target = name
     try:
