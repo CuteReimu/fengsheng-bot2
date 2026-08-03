@@ -42,9 +42,9 @@ async def _poll_once() -> None:
     if not _group_ids:
         return
     try:
-        msgs = await _get_json("/getgroupmessages")
+        msgs = await _get_json("/get_group_messages")
     except Exception as e:
-        logger.error(f"getgroupmessages failed: {e}")
+        logger.error(f"get_group_messages failed: {e}")
         return
     if not msgs:
         return
