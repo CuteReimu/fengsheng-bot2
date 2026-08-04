@@ -6,7 +6,7 @@ from pathlib import Path
 import yaml
 from nonebot import get_bot, get_driver, on_command
 from nonebot.adapters import Event
-from nonebot.adapters.qq import Bot
+from nonebot.adapters.qq import Bot, MessageSegment
 from nonebot.adapters.qq.event import GroupMessageCreateEvent
 from nonebot.log import logger
 
@@ -53,6 +53,15 @@ async def _poll_once() -> None:
         return
     for gid in _group_ids:
         for msg in msgs:
+            if msg.startswith("对局结果"):
+                head = ["玩家", "角色", "身份", "结果", "段位", "分数"]
+                new_lines = ["#### 对局结果", "", f"|{'|'.join(head)}|", f"|{'|'.join('---' for _ in head)}|"]
+                for line in msg.split("\n"):
+                    arr = line.split(",")
+                    if len(arr) <= 1:
+                        continue
+                    new_lines.append(f"|{'|'.join(arr)}|")
+                msg = MessageSegment.markdown("\n".join(new_lines))
             try:
                 await bot.send_to_group(group_openid=gid, message=msg)
             except Exception as e:
