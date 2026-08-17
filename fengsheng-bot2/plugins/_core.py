@@ -85,7 +85,7 @@ async def _get_result(path: str, params: dict | None = None) -> Any:
     r = await _http.get(FENGSHENG_URL + path, params=params)
     r.raise_for_status()
     j = r.json()
-    e = j.get("err")
+    e = j.get("error")
     if e:
         raise Exception(e)
     return j
