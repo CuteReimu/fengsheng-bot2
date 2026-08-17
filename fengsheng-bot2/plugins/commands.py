@@ -155,7 +155,7 @@ async def _h_register(event: Event, args: Message = CommandArg()) -> None:
         ok = await _get_bool("/register", {"name": name})
     except Exception as e:
         logger.error(e)
-        await _register.finish("注册失败，请稍后再试。")
+        await _register.finish(str(e))
         return
     if not ok:
         await _register.finish("用户名重复")
