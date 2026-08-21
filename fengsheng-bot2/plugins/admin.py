@@ -11,7 +11,7 @@ from ._core import (
 )
 
 # 绑定
-_bind = on_command("绑定", priority=10, block=True)
+_bind = on_command("绑定", force_whitespace=True, priority=10, block=True)
 
 
 @_bind.handle()

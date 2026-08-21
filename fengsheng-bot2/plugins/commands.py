@@ -139,7 +139,7 @@ async def _h_winrate(args: Message = CommandArg()) -> None:
 
 
 # 注册
-_register = on_command("注册", priority=10, block=True)
+_register = on_command("注册", force_whitespace=True, priority=10, block=True)
 
 
 @_register.handle()
