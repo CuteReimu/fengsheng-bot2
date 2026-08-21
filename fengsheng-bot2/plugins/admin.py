@@ -10,6 +10,39 @@ from ._core import (
     _get_str, _get_bool,
 )
 
+# 管理员绑定玩家
+_admin_bind = on_command("绑定玩家", force_whitespace=True, priority=10, block=True)
+
+
+@_admin_bind.handle()
+async def _h_admin_bind(event: Event, args: Message = CommandArg()) -> None:
+    if not _is_admin(event):
+        return
+    arr = args.extract_plain_text().strip().split(" ")
+    if len(arr) != 2:
+        await _bind.finish(f"命令格式：\n绑定玩家 id 名字")
+    uid = arr[0]
+    name = arr[1]
+    if not uid or not name:
+        await _bind.finish("命令格式：\n绑定玩家 id 名字")
+    for id0, name0 in _perm["playerMap"].items():
+        if id0 == uid:
+            await _bind.finish("不能重复绑定")
+        if name0 == name:
+            await _bind.finish("该角色已被绑定")
+    try:
+        result = await _get_str("/getscore", {"name": name})
+    except Exception as e:
+        logger.error(e)
+        await _bind.finish("请求失败，请稍后再试。")
+        return
+    if result.endswith("已身死道消"):
+        await _bind.finish("不存在的玩家")
+    _perm["playerMap"][uid] = name
+    _save()
+    await _bind.finish("绑定成功")
+
+
 # 绑定
 _bind = on_command("绑定", force_whitespace=True, priority=10, block=True)
 
